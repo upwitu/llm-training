@@ -187,6 +187,7 @@ def process_to_dataset(config: Dict) -> tuple[Dataset, Optional[Dataset]]:
                 config["model"]["name"],
                 cache_dir=os.environ["HF_HOME"],
                 use_fast=True,
+                trust_remote_code=True,
             )
 
             # ── Load + deduplicate ────────────────────────────────────────
