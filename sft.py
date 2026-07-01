@@ -292,7 +292,6 @@ def load_model(config: Dict):
         dtype=model_args["dtype"],
         load_in_4bit=model_args.get("load_in_4bit", False),
         fast_inference=False,   # vLLM-based, incompatible with DDP
-        cache_dir=cache_dir,
     )
     tokenizer = processor.tokenizer
 

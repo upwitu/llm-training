@@ -11,7 +11,7 @@ model:
   load_in_4bit: false     # ❌ Disable 4-bit — you have large VRAM; full precision > speed + quality
 
 cache:
-  dir: "~/.cache/huggingface/hub"
+  dir: "~/.cache/huggingface"
 lora:
   r: 8                   # ↑ from 32 → better capacity for 34k examples (prevents underfitting)
   alpha: 16            # = 2 * r → more aggressive updates, proven effective in Unsloth
