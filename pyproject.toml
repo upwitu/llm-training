@@ -28,7 +28,8 @@ dependencies = [
     "python-dotenv",
     "pandas",
     "tqdm",
-
+    "sentencepiece",
+    "tiktoken",
 
     "torchao>=0.16.0",
 ]
