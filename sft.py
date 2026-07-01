@@ -26,12 +26,13 @@ def get_cache_dir_from_config(config_path: str) -> str:
                     next_line = next(f, "").strip()
                     if next_line.startswith("dir:"):
                         dir_val = next_line.split(":", 1)[1].strip().strip("\"'")
-                        return resolve_env_vars(dir_val)
+                        return os.path.expanduser(resolve_env_vars(dir_val))
     except Exception as e:
         print(f"⚠️  Failed to read cache.dir from {config_path}: {e}")
     return os.getenv("HF_CACHE_DIR", os.path.expanduser("~/.cache/huggingface"))
 
 HF_CACHE_DIR = get_cache_dir_from_config(CONFIG_PATH)
+print("FINAL HF CACHE:", HF_CACHE_DIR)
 os.environ["HF_HOME"] = HF_CACHE_DIR
 os.environ["HF_HUB_CACHE"] = HF_CACHE_DIR
 os.environ["TRANSFORMERS_CACHE"] = HF_CACHE_DIR
