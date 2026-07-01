@@ -1,0 +1,79 @@
+datasets:
+  sample:
+    path: "data/sample.jsonl"
+    sample_ratio: 1
+
+model:
+  name: "unsloth/Qwen3.5-0.8B"
+  fast_inference: false
+  max_seq_length: 16384
+  dtype: "bfloat16"       # Best for A100/H100; use "float16" for consumer GPUs
+  load_in_4bit: false     # ❌ Disable 4-bit — you have large VRAM; full precision > speed + quality
+
+cache:
+  dir: "~/.cache/huggingface/hub"
+lora:
+  r: 8                   # ↑ from 32 → better capacity for 34k examples (prevents underfitting)
+  alpha: 16            # = 2 * r → more aggressive updates, proven effective in Unsloth
+  dropout: 0.0            # ✅ 0 → Unsloth-optimized path (faster); add 0.1 if overfitting observed
+  bias: "none"            # ✅ Standard; no need to train bias
+  use_gradient_checkpointing: "unsloth"  # 🦥 30% less VRAM + supports 16k+ context
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+#    - "gate_up_proj"
+  use_rslora: false       # Keep False unless experimenting (adds complexity)
+  loftq_config: null      # Avoid — causes mem spike; not needed for strong results
+
+training:
+  messages_column: "conversations"
+  seed: 3407
+  
+  response_format:
+    instruction_part: "<|im_start|>user\n"
+    response_part: "<|im_start|>assistant\n<think>\n\n</think>\n\n"
+
+  # 🌳 EFFECTIVE BATCH SIZE = 16 (stable & fast)
+  # With large GPU, push batch_size as high as VRAM allows → speed ↑
+  per_device_train_batch_size: 2   # ✅ Higher = better GPU utilization
+  gradient_accumulation_steps: 8   # → Effective = 2 × 8 = 16
+  # 📈 LR & Schedule (standard for SFT)
+  learning_rate: 1e-5
+
+  lr_scheduler_type: "cosine"      # ↑ from "linear" → smoother convergence
+
+  warmup_ratio: 0.03               # ~1k warmup steps (better than fixed 5 for 34k)
+  weight_decay: 0.01               # ↑ from 0.001 → standard for LoRA
+
+  # ⏱ Training
+  num_train_epochs: 1.0
+  logging_steps: 20                # ↓ from 1 → less noisy (W&B handles streaming)
+  optim: "adamw_8bit"        # ✅ Best for LoRA
+
+  # 📦 Packing (🚀 CRITICAL FOR SPEED WITH VARIABLE-LENGTH DATA)
+  packing: False                    # ✅ Concatenates samples → fewer padding tokens → 2–3× faster
+  max_seq_length: 16384            # Must match model.max_seq_length
+#  max_seq_length: 4096
+  # 🧪 Evaluation (balanced: not too big, not too small)
+  eval_size: 0                   # ~1.8% of 34k → statistically meaningful, fast eval
+  eval_steps: null                  # ~every 0.3 epoch → frequent enough
+  evaluation_strategy: "no"
+  save_strategy: "steps"
+  save_steps: 2000                  # Every 100 steps (~every 0.3 epoch)
+  load_best_model_at_end: false     # ✅ Save best (lowest eval_loss) checkpoint
+  metric_for_best_model: "eval_loss"
+  greater_is_better: false
+  #save_total_limit: 10              # Keep only 3 latest + best
+
+  # 📊 Logging
+  log_max_seq_length: true
+  output_dir: "models/qwen3.5_0.8b_sft_tool_call_example"
+wandb:
+  project: "vfs"
+  run_name: "qwen3.5_0.8b_sft_tool_call_example"
+  report_to: "wandb"

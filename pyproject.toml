@@ -1,0 +1,42 @@
+[project]
+name = "unsloth-sft-training"
+version = "0.1.0"
+description = "SFT training with Unsloth + DDP"
+requires-python = ">=3.11"
+
+dependencies = [
+    "numpy",
+    "pillow",
+    "torch==2.8.0",
+    "torchvision",
+    "triton>=3.3.0",
+    "bitsandbytes",
+    "xformers==0.0.32.post2",
+
+    "unsloth",
+    "unsloth-zoo",
+
+    "transformers==5.2.0",
+    "tokenizers>=0.22.0,<0.23.0",
+
+    "trl==0.22.2",
+    "datasets",
+    "accelerate",
+
+    "wandb",
+    "pyyaml",
+    "python-dotenv",
+    "pandas",
+    "tqdm",
+
+    "flash-linear-attention",
+    "causal-conv1d==1.6.0",
+
+    "torchao>=0.16.0",
+]
+
+[tool.uv]
+no-build-isolation-package = [
+    "flash-linear-attention",
+    "causal-conv1d"
+]

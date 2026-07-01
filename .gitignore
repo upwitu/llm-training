@@ -1,0 +1,106 @@
+data
+
+fr.sh
+flattened_repo.txt
+repo_structure.yaml
+
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+
+# =========================
+# Virtual environments
+# =========================
+.venv/
+venv/
+env/
+
+# uv
+.uv/
+uv-cache/
+
+
+# =========================
+# HuggingFace cache
+# =========================
+.cache/
+cache/
+huggingface/
+.huggingface/
+
+# Your configured HF cache
+~/.cache/huggingface/
+
+
+# =========================
+# Models / checkpoints
+# =========================
+models/
+checkpoints/
+*.safetensors
+*.bin
+*.pt
+*.pth
+
+
+# =========================
+# Datasets
+# =========================
+data/
+*.jsonl
+*.json
+
+
+# =========================
+# Training outputs
+# =========================
+outputs/
+runs/
+wandb/
+tensorboard/
+logs/
+
+# TRL / accelerate
+accelerate_logs/
+
+
+# =========================
+# Jupyter
+# =========================
+.ipynb_checkpoints/
+
+
+# =========================
+# OS
+# =========================
+.DS_Store
+Thumbs.db
+
+
+# =========================
+# IDE
+# =========================
+.vscode/
+.idea/
+
+
+# =========================
+# Environment secrets
+# =========================
+.env
+.env.*
+
+
+# =========================
+# Temporary files
+# =========================
+*.tmp
+*.log
+*.swp
+*.bak
