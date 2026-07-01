@@ -2,7 +2,7 @@
 name = "unsloth-sft-training"
 version = "0.1.0"
 description = "SFT training with Unsloth + DDP"
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.12"
 
 dependencies = [
     "numpy",
@@ -29,14 +29,6 @@ dependencies = [
     "pandas",
     "tqdm",
 
-    "flash-linear-attention",
-    "causal-conv1d==1.6.0",
 
     "torchao>=0.16.0",
-]
-
-[tool.uv]
-no-build-isolation-package = [
-    "flash-linear-attention",
-    "causal-conv1d"
 ]
